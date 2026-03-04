@@ -13,6 +13,7 @@ services:
     networks:
       - app-network
 
+# for the gui
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin_gui
@@ -30,5 +31,6 @@ networks:
   app-network:
     driver: bridge
 
+# database storage
 volumes:
   postgres_data:
