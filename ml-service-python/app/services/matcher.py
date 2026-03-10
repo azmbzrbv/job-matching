@@ -16,18 +16,38 @@ def clean_text(text: str) -> str:
     return text.strip()
 
 
-def calculate_similarity(resume_text: str, jobs: Dict[int, str]) -> Dict[int, float]:
+def rank_candidates_for_job(job_description: str, candidate_resumes: Dict[int, str]) -> Dict[int, float]:
     """
-    Compares a resume against a dictionary of jobs.
-    Returns a dictionary of {job_id: score}.
+    Recruiter Logic: 1 Job vs Many CVs.
+    Returns {candidate_id: match_score}
     """
-    if not jobs:
+    # This is exactly the same logic as calculate_similarity!
+    return calculate_similarity(job_description, candidate_resumes)
+
+
+def rank_jobs_for_candidate(resume_text: str, jobs: Dict[int, str]) -> Dict[int, float]:
+    """
+    Candidate Logic: 1 CV vs Many Jobs.
+    Returns {job_id: match_score}
+    """
+    # This is exactly the same logic as calculate_similarity!
+    return calculate_similarity(resume_text, jobs)
+
+
+
+
+def calculate_similarity(text: str, dics: Dict[int, str]) -> Dict[int, float]:
+    """
+    Compares a text against a dictionary of texts.
+    Returns a dictionary of {id: score}.
+    """
+    if not dics:
         return {}
 
-    clean_resume = clean_text(resume_text)
-    job_ids = list(jobs.keys())
-    job_descriptions = [clean_text(jobs[job_id]) for job_id in job_ids]
-    all_texts = [clean_resume] + job_descriptions
+    clean_resume = clean_text(text)
+    ids = list(dics.keys())
+    descriptions = [clean_text(dics[item_id]) for item_id in ids]
+    all_texts = [clean_resume] + descriptions
 
 
 
@@ -41,8 +61,8 @@ def calculate_similarity(resume_text: str, jobs: Dict[int, str]) -> Dict[int, fl
     similarities = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:])[0]
 
     results = {
-        job_ids[i]: round(float(similarities[i]), 4) 
-        for i in range(len(job_ids))
+        ids[i]: round(float(similarities[i]), 4) 
+        for i in range(len(ids))
     }
 
     return results
