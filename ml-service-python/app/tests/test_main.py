@@ -16,7 +16,7 @@ def test_rank_jobs():
     # 1. Prepare the JSON data exactly like your Java 'PredictionRequest'
     payload = {
         "text": "Java Spring Boot Developer",
-        "dics": {
+        "items": {
             "1": "Java developer with Spring Boot experience required",
             "2": "Data Scientist using Python and machine learning techniques"
         }
@@ -40,7 +40,7 @@ def test_rank_candidates():
     # 1. Prepare the JSON data exactly like your Java 'PredictionRequest'
     payload = {
         "text": "Java Spring Boot Developer skills required",
-        "dics": {
+        "items": {
             "1": "Java Spring Boot Developer",
             "2": "Data Scientist using Python"
         }

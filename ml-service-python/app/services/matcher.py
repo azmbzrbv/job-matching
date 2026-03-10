@@ -36,17 +36,17 @@ def rank_jobs_for_candidate(resume_text: str, jobs: Dict[int, str]) -> Dict[int,
 
 
 
-def calculate_similarity(text: str, dics: Dict[int, str]) -> Dict[int, float]:
+def calculate_similarity(text: str, items: Dict[int, str]) -> Dict[int, float]:
     """
     Compares a text against a dictionary of texts.
     Returns a dictionary of {id: score}.
     """
-    if not dics:
+    if not items:
         return {}
 
     clean_resume = clean_text(text)
-    ids = list(dics.keys())
-    descriptions = [clean_text(dics[item_id]) for item_id in ids]
+    ids = list(items.keys())
+    descriptions = [clean_text(items[item_id]) for item_id in ids]
     all_texts = [clean_resume] + descriptions
 
 
