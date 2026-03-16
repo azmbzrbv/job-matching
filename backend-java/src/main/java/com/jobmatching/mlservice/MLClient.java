@@ -1,6 +1,7 @@
 package com.jobmatching.mlservice;
 
 
+import com.jobmatching.Candidate.Candidate;
 import com.jobmatching.Job.Job;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
@@ -48,6 +49,20 @@ public class MLClient {
                 .bodyValue(request)
                 .retrieve()
                 // We expect a Map where Key is JobID and Value is the Match Score
+                .bodyToMono(new ParameterizedTypeReference<Map<Long, Double>>() {})
+                .block();
+    }
+
+    public Map<Long, Double> rankCandidates(String jobDescription, List<Candidate> candidates){
+        Map<Long, String> candidateMap = candidates.stream()
+                .collect(Collectors.toMap(Candidate::getId, Candidate::getResumeText));
+
+        PredictionRequest request = new PredictionRequest(jobDescription, candidateMap);
+        return webClient.post()
+                .uri("/rank-candidates")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<Long, Double>>() {})
                 .block();
     }
