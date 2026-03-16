@@ -27,6 +27,11 @@ public class CandidateService {
     }
 
 
+    public Candidate findCandidateById(Long id){
+        return candidateRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Candidate with id: "+id+" not found"));
+    }
+
     public Candidate registerCandidate(String fullName, String email) {
         if (candidateRepository.existsByEmail(email)) {
             throw new RuntimeException("Email already registered");

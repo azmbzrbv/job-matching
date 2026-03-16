@@ -3,8 +3,10 @@ package com.jobmatching.Application;
 
 import com.jobmatching.Candidate.Candidate;
 import com.jobmatching.Candidate.CandidateRepository;
+import com.jobmatching.Candidate.CandidateService;
 import com.jobmatching.Job.Job;
 import com.jobmatching.Job.JobRepository;
+import com.jobmatching.Job.JobService;
 import com.jobmatching.mlservice.MLClient;
 import org.springframework.stereotype.Service;
 
@@ -16,18 +18,18 @@ public class ApplicationService {
 
     private final ApplicationRepository applicationRepository;
     private final MLClient mlClient;
-    private final JobRepository jobRepository;
-    private final CandidateRepository candidateRepository;
+    private final JobService jobService;
+    private final CandidateService candidateService;
 
 
     public ApplicationService(ApplicationRepository applicationRepository,
                                 MLClient mlClient,
-                                JobRepository jobRepository,
-                                CandidateRepository candidateRepository) {
+                                JobService jobService,
+                                CandidateService candidateService) {
         this.applicationRepository = applicationRepository;
         this.mlClient = mlClient;
-        this.jobRepository = jobRepository;
-        this.candidateRepository = candidateRepository;
+        this.jobService = jobService;
+        this.candidateService = candidateService;
     }
 
 
@@ -45,10 +47,8 @@ public class ApplicationService {
             throw new RuntimeException("You have already applied for this position.");
         }
 
-        Candidate candidate = candidateRepository.findById(candidateId)
-                .orElseThrow(() -> new RuntimeException("Candidate Not Found"));
-        Job job = jobRepository.findById(jobId)
-                .orElseThrow(() -> new RuntimeException("Job Not Found"));
+        Candidate candidate = candidateService.findCandidateById(candidateId);
+        Job job = jobService.findJobById(jobId);
 
         // Score Calculation
         Map<Long, Double> result = mlClient.rankCandidates(job.getDescription(), List.of(candidate));
