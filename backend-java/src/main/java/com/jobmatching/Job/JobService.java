@@ -1,5 +1,6 @@
 package com.jobmatching.Job;
 
+import com.jobmatching.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class JobService {
 
     public Job findJobById(Long id) {
         return jobRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Job not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Job not found with id: " + id));
     }
 
     public Job createJob(Job job) {

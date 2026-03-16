@@ -4,6 +4,8 @@ package com.jobmatching.Candidate;
 import com.jobmatching.Job.Job;
 import com.jobmatching.Job.JobService;
 import com.jobmatching.Job.dto.JobResponseDTO;
+import com.jobmatching.exception.BadRequestException;
+import com.jobmatching.exception.ResourceNotFoundException;
 import com.jobmatching.mlservice.MLClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -29,12 +31,12 @@ public class CandidateService {
 
     public Candidate findCandidateById(Long id){
         return candidateRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Candidate with id: "+id+" not found"));
+                .orElseThrow(()-> new ResourceNotFoundException("Candidate with id: "+id+" not found"));
     }
 
     public Candidate registerCandidate(String fullName, String email) {
         if (candidateRepository.existsByEmail(email)) {
-            throw new RuntimeException("Email already registered");
+            throw new BadRequestException("Email already registered");
         }
         Candidate candidate = new Candidate();
         candidate.setFullName(fullName);
@@ -51,11 +53,11 @@ public class CandidateService {
     public void processAndSaveCv(Long id, MultipartFile file) {
         // 1. Basic File Validation
         if (file.isEmpty() || !file.getContentType().equals("application/pdf")) {
-            throw new RuntimeException("Please upload a valid PDF file");
+            throw new BadRequestException("Please upload a valid PDF file");
         }
 
         Candidate candidate = candidateRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Candidate Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Candidate Not Found"));
 
         // 2. ML Extraction
         try {
@@ -63,19 +65,19 @@ public class CandidateService {
             candidate.setResumeText(extractedText);
             candidateRepository.save(candidate);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to process PDF: " + e.getMessage());
+            throw new RuntimeException("ML Service Error: Could not parse CV", e);
         }
     }
 
 
     public List<JobResponseDTO> returnMatchedJobs(Long id){
         Candidate candidate = candidateRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Candidate Not Found"));
+                .orElseThrow(()-> new ResourceNotFoundException("Candidate Not Found"));
 
         String resumeText = candidate.getResumeText();
 
         if (resumeText == null || resumeText.isEmpty()) {
-            throw new RuntimeException("Please upload your CV first before fetching matches.");
+            throw new BadRequestException("Please upload your CV first before fetching matches.");
         }
 
         List<Job> candidateJobs = jobService.returnAllJobs();
