@@ -17,6 +17,15 @@ public class CandidateController {
         this.candidateService = candidateService;
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<Candidate> register(@RequestParam String name, @RequestParam String email) {
+        return ResponseEntity.ok(candidateService.registerCandidate(name, email));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Candidate> getProfile(@PathVariable Long id) {
+        return candidateService.getCandidateProfile(id);
+    }
 
     //cv logic
     @PostMapping("{id}/cv-upload")

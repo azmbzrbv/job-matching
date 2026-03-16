@@ -5,6 +5,7 @@ import com.jobmatching.Job.Job;
 import com.jobmatching.Job.JobService;
 import com.jobmatching.Job.dto.JobResponseDTO;
 import com.jobmatching.mlservice.MLClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,17 +27,41 @@ public class CandidateService {
     }
 
 
-    public void processAndSaveCv(Long id, MultipartFile file){
-        Candidate candidate = candidateRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Candidate Not Found"));
-
-        // we need to use weblient here
-        String extractedText = mlClient.extractTextFromPDF(file);
-
-        // 3. Update the candidate entity
-        candidate.setResumeText(extractedText);
-        candidateRepository.save(candidate);
+    public Candidate registerCandidate(String fullName, String email) {
+        if (candidateRepository.existsByEmail(email)) {
+            throw new RuntimeException("Email already registered");
+        }
+        Candidate candidate = new Candidate();
+        candidate.setFullName(fullName);
+        candidate.setEmail(email);
+        return candidateRepository.save(candidate);
     }
+
+    public ResponseEntity<Candidate> getCandidateProfile(Long id){
+        return candidateRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    public void processAndSaveCv(Long id, MultipartFile file) {
+        // 1. Basic File Validation
+        if (file.isEmpty() || !file.getContentType().equals("application/pdf")) {
+            throw new RuntimeException("Please upload a valid PDF file");
+        }
+
+        Candidate candidate = candidateRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Candidate Not Found"));
+
+        // 2. ML Extraction
+        try {
+            String extractedText = mlClient.extractTextFromPDF(file);
+            candidate.setResumeText(extractedText);
+            candidateRepository.save(candidate);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to process PDF: " + e.getMessage());
+        }
+    }
+
 
     public List<JobResponseDTO> returnMatchedJobs(Long id){
         Candidate candidate = candidateRepository.findById(id)
