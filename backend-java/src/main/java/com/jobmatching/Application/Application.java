@@ -4,6 +4,9 @@ package com.jobmatching.Application;
 import com.jobmatching.Candidate.Candidate;
 import com.jobmatching.Job.Job;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 public class Application {
@@ -23,13 +26,18 @@ public class Application {
 
     private double matchScore;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ApplicationStatus status;
 
-    public String getStatus() {
+    @CreationTimestamp
+    @Column(updatable = false, nullable = false)
+    private LocalDateTime appliedAt;
+
+    public ApplicationStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(ApplicationStatus status) {
         this.status = status;
     }
 

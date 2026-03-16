@@ -1,6 +1,7 @@
 package com.jobmatching.Job;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jobmatching.Application.Application;
 import com.jobmatching.Recruiter.Recruiter;
 import jakarta.persistence.*;
@@ -22,6 +23,7 @@ public class Job {
     @JoinColumn(name = "recruiter_id")
     private Recruiter recruiter;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
     private List<Application> applications = new ArrayList<>();
 
