@@ -2,6 +2,9 @@ package com.jobmatching.Recruiter;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RecruiterRepository extends JpaRepository<Recruiter, Long> {
+import java.util.Optional;
 
+public interface RecruiterRepository extends JpaRepository<Recruiter, Long> {
+    Optional<Recruiter> findByEmail(String email);
+    boolean existsByEmail(String email);
 }
