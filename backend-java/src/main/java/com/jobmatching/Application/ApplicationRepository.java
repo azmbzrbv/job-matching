@@ -8,7 +8,11 @@ import java.util.List;
 
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
-    List<Application> findByJobId(Long jobId);
+    // For sorting the recruiter view by score
+    List<Application> findByJobIdOrderByMatchScoreDesc(Long jobId);
 
     List<Application> findByCandidateId(Long candidateId);
+
+    // To check if someone already applied
+    boolean existsByCandidateIdAndJobId(Long candidateId, Long jobId);
 }

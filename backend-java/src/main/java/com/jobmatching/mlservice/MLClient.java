@@ -36,6 +36,8 @@ public class MLClient {
                 .block(); // Waits for the response (Synchronous behavior)
     }
 
+
+
     public Map<Long, Double> rankJobs(String resumeText, List<Job> jobs) {
         Map<Long, String> jobMap = jobs.stream()
                 .collect(Collectors.toMap(Job::getId, Job::getDescription));
@@ -53,6 +55,8 @@ public class MLClient {
                 .block();
     }
 
+
+    //TODO: change them to single comparison after updating the python functionality
     public Map<Long, Double> rankCandidates(String jobDescription, List<Candidate> candidates){
         Map<Long, String> candidateMap = candidates.stream()
                 .collect(Collectors.toMap(Candidate::getId, Candidate::getResumeText));
