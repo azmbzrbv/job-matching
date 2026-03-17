@@ -34,13 +34,11 @@ public class CandidateService {
                 .orElseThrow(()-> new ResourceNotFoundException("Candidate with id: "+id+" not found"));
     }
 
-    public Candidate registerCandidate(String fullName, String email) {
-        if (candidateRepository.existsByEmail(email)) {
+    public Candidate registerCandidate(Candidate candidate) {
+        if (candidateRepository.existsByEmail(candidate.getEmail())) {
             throw new BadRequestException("Email already registered");
         }
-        Candidate candidate = new Candidate();
-        candidate.setFullName(fullName);
-        candidate.setEmail(email);
+        candidate.setId(null);
         return candidateRepository.save(candidate);
     }
 

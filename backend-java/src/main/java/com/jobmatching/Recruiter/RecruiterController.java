@@ -1,6 +1,7 @@
 package com.jobmatching.Recruiter;
 
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class RecruiterController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Recruiter> register(@RequestBody Recruiter recruiter) {
+    public ResponseEntity<Recruiter> register(@Valid @RequestBody Recruiter recruiter) {
         Recruiter savedRecruiter = recruiterService.registerRecruiter(recruiter);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRecruiter);
     }

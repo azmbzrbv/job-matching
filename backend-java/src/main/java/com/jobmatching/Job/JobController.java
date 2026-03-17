@@ -1,6 +1,7 @@
 package com.jobmatching.Job;
 
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class JobController {
 
     // For Recruiters: Post a new job
     @PostMapping
-    public ResponseEntity<Job> postJob(@RequestBody Job job) {
+    public ResponseEntity<Job> postJob(@Valid @RequestBody Job job) {
         return ResponseEntity.ok(jobService.createJob(job));
     }
 

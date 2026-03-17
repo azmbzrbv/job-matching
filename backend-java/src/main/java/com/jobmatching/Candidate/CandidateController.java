@@ -1,6 +1,8 @@
 package com.jobmatching.Candidate;
 
 import com.jobmatching.Job.dto.JobResponseDTO;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,8 +20,9 @@ public class CandidateController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Candidate> register(@RequestParam String name, @RequestParam String email) {
-        return ResponseEntity.ok(candidateService.registerCandidate(name, email));
+    public ResponseEntity<Candidate> register(@Valid @RequestBody Candidate candidate) {
+        Candidate savedCandidate = candidateService.registerCandidate(candidate);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedCandidate);
     }
 
     @GetMapping("/{id}")
