@@ -2,11 +2,11 @@ package com.jobmatching.Application;
 
 
 import com.jobmatching.Candidate.Candidate;
-import com.jobmatching.Candidate.CandidateRepository;
 import com.jobmatching.Candidate.CandidateService;
 import com.jobmatching.Job.Job;
-import com.jobmatching.Job.JobRepository;
 import com.jobmatching.Job.JobService;
+import com.jobmatching.exception.BadRequestException;
+import com.jobmatching.exception.ResourceNotFoundException;
 import com.jobmatching.mlservice.MLClient;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +44,7 @@ public class ApplicationService {
     public Application createApplication(Long candidateId, Long jobId) {
         // Duplicate Check
         if (applicationRepository.existsByCandidateIdAndJobId(candidateId, jobId)) {
-            throw new RuntimeException("You have already applied for this position.");
+            throw new BadRequestException("You have already applied for this position.");
         }
 
         Candidate candidate = candidateService.findCandidateById(candidateId);
@@ -67,7 +67,7 @@ public class ApplicationService {
     // Update application status (For Recruiters)
     public Application updateStatus(Long applicationId, ApplicationStatus status) {
         Application app = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Application not found"));
         app.setStatus(status);
         return applicationRepository.save(app);
     }

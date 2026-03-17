@@ -4,6 +4,8 @@ package com.jobmatching.Recruiter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jobmatching.Job.Job;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +16,14 @@ public class Recruiter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Recruiter name is required")
     private String name;
+
+    @Email(message = "Please provide a valid email address")
+    @NotBlank(message = "Email is required")
     private String email;
+
+    @NotBlank(message = "Company name is required")
     private String companyName;
 
     @JsonIgnore
