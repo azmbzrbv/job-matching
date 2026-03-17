@@ -4,6 +4,8 @@ package com.jobmatching.Candidate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jobmatching.Application.Application;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,11 @@ public class Candidate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Full name is required")
     private String fullName;
+
+    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email is required")
     private String email;
 
     @Column(columnDefinition = "TEXT")

@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jobmatching.Application.Application;
 import com.jobmatching.Recruiter.Recruiter;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +18,16 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title is required")
+    @Size(max = 100, message = "Title is too long")
     private String title;
+
+    @NotBlank(message = "Description is required")
+    @Size(min = 50, message = "Description must be at least 50 characters for better matching")
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @NotNull(message = "A job must belong to a recruiter")
     @ManyToOne
     @JoinColumn(name = "recruiter_id")
     private Recruiter recruiter;
