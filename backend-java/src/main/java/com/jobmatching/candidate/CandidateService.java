@@ -1,11 +1,11 @@
-package com.jobmatching.Candidate;
+package com.jobmatching.candidate;
 
 
-import com.jobmatching.Candidate.dto.CandidateRequestDTO;
-import com.jobmatching.Candidate.dto.CandidateResponseDTO;
-import com.jobmatching.Job.Job;
-import com.jobmatching.Job.JobService;
-import com.jobmatching.Job.dto.JobResponseDTO;
+import com.jobmatching.candidate.dto.CandidateRequestDTO;
+import com.jobmatching.candidate.dto.CandidateResponseDTO;
+import com.jobmatching.job.Job;
+import com.jobmatching.job.JobService;
+import com.jobmatching.job.dto.JobResponseDTO;
 import com.jobmatching.exception.BadRequestException;
 import com.jobmatching.exception.ResourceNotFoundException;
 import com.jobmatching.mlservice.MLClient;

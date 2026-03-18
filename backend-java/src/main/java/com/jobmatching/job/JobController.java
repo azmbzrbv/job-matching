@@ -1,8 +1,8 @@
-package com.jobmatching.Job;
+package com.jobmatching.job;
 
 
-import com.jobmatching.Job.dto.JobRequestDTO;
-import com.jobmatching.Job.dto.JobResponseDTO;
+import com.jobmatching.job.dto.JobRequestDTO;
+import com.jobmatching.job.dto.JobResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

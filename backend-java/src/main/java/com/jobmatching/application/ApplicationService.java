@@ -1,17 +1,15 @@
-package com.jobmatching.Application;
+package com.jobmatching.application;
 
 
-import com.jobmatching.Application.dto.ApplicationRequestDTO;
-import com.jobmatching.Application.dto.ApplicationResponseDTO;
-import com.jobmatching.Candidate.Candidate;
-import com.jobmatching.Candidate.CandidateService;
-import com.jobmatching.Job.Job;
-import com.jobmatching.Job.JobService;
-import com.jobmatching.Job.dto.JobResponseDTO;
+import com.jobmatching.application.dto.ApplicationRequestDTO;
+import com.jobmatching.application.dto.ApplicationResponseDTO;
+import com.jobmatching.candidate.Candidate;
+import com.jobmatching.candidate.CandidateService;
+import com.jobmatching.job.Job;
+import com.jobmatching.job.JobService;
 import com.jobmatching.exception.BadRequestException;
 import com.jobmatching.exception.ResourceNotFoundException;
 import com.jobmatching.mlservice.MLClient;
-import com.jobmatching.recruiter.Recruiter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
