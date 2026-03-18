@@ -3,7 +3,7 @@ package com.jobmatching.Job;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jobmatching.Application.Application;
-import com.jobmatching.Recruiter.Recruiter;
+import com.jobmatching.recruiter.Recruiter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

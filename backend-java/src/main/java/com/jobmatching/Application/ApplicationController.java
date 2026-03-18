@@ -1,9 +1,10 @@
 package com.jobmatching.Application;
 
 
-import com.jobmatching.Candidate.Candidate;
-import com.jobmatching.Job.Job;
-import org.apache.coyote.Response;
+import com.jobmatching.Application.dto.ApplicationRequestDTO;
+import com.jobmatching.Application.dto.ApplicationResponseDTO;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,31 +22,31 @@ public class ApplicationController {
 
 
     @GetMapping
-    public List<Application> findAllApplications() {
-        return applicationService.getAllApplications(); 
+    public ResponseEntity<List<ApplicationResponseDTO>> findAllApplications() {
+        return ResponseEntity.ok(applicationService.fetchAllApplications());
     }
 
     @PostMapping("/apply")
-    public ResponseEntity<Application> apply(@RequestParam Long candidateId, @RequestParam Long jobId){
-        Application newApplication = applicationService.createApplication(candidateId, jobId);
-        return ResponseEntity.ok(newApplication);
+    public ResponseEntity<ApplicationResponseDTO> apply(@Valid @RequestBody ApplicationRequestDTO applicationRequestDTO) {
+        ApplicationResponseDTO response = applicationService.createApplication(applicationRequestDTO);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     // Recruiter View: Ranked Applicants
     @GetMapping("/job/{jobId}")
-    public ResponseEntity<List<Application>> getRankedApplicants(@PathVariable Long jobId) {
-        return ResponseEntity.ok(applicationService.getApplicationsByJob(jobId));
+    public ResponseEntity<List<ApplicationResponseDTO>> getRankedApplicants(@PathVariable Long jobId) {
+        return ResponseEntity.ok(applicationService.fetchApplicationsByJob(jobId));
     }
 
     // Candidate View: My Applications
     @GetMapping("/my-applications/{candidateId}")
-    public ResponseEntity<List<Application>> getMyApplications(@PathVariable Long candidateId) {
-        return ResponseEntity.ok(applicationService.getApplicationsByCandidate(candidateId));
+    public ResponseEntity<List<ApplicationResponseDTO>> getMyApplications(@PathVariable Long candidateId) {
+        return ResponseEntity.ok(applicationService.fetchApplicationsByCandidate(candidateId));
     }
 
     // Recruiter Action: Update Status
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Application> updateStatus(@PathVariable Long id, @RequestParam ApplicationStatus status) {
+    public ResponseEntity<ApplicationResponseDTO> updateStatus(@PathVariable Long id, @RequestParam ApplicationStatus status) {
         return ResponseEntity.ok(applicationService.updateStatus(id, status));
     }
 }

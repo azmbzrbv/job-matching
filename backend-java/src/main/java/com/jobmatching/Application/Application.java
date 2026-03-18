@@ -33,6 +33,10 @@ public class Application {
     @Column(updatable = false, nullable = false)
     private LocalDateTime appliedAt;
 
+    public LocalDateTime getAppliedAt() {
+        return appliedAt;
+    }
+
     public ApplicationStatus getStatus() {
         return status;
     }

@@ -1,4 +1,4 @@
-package com.jobmatching.Recruiter;
+package com.jobmatching.recruiter;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

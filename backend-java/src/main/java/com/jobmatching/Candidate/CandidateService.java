@@ -1,13 +1,14 @@
 package com.jobmatching.Candidate;
 
 
+import com.jobmatching.Candidate.dto.CandidateRequestDTO;
+import com.jobmatching.Candidate.dto.CandidateResponseDTO;
 import com.jobmatching.Job.Job;
 import com.jobmatching.Job.JobService;
 import com.jobmatching.Job.dto.JobResponseDTO;
 import com.jobmatching.exception.BadRequestException;
 import com.jobmatching.exception.ResourceNotFoundException;
 import com.jobmatching.mlservice.MLClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,36 +29,41 @@ public class CandidateService {
         this.jobService = jobService;
     }
 
+    // --- INTERNAL GETTERS (For other services/internal logic) ---
 
-    public Candidate findCandidateById(Long id){
+    public Candidate getCandidateById(Long id){
         return candidateRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Candidate with id: "+id+" not found"));
+                .orElseThrow(()-> new ResourceNotFoundException("Candidate with id: " + id + " not found"));
     }
 
-    public Candidate registerCandidate(Candidate candidate) {
-        if (candidateRepository.existsByEmail(candidate.getEmail())) {
+    // --- EXTERNAL FETCHERS (For Controller) ---
+
+    public CandidateResponseDTO fetchCandidateProfile(Long id){
+        Candidate candidate = getCandidateById(id);
+        return new CandidateResponseDTO(candidate);
+    }
+
+    public CandidateResponseDTO registerCandidate(CandidateRequestDTO dto) {
+        if (candidateRepository.existsByEmail(dto.email())) {
             throw new BadRequestException("Email already registered");
         }
-        candidate.setId(null);
-        return candidateRepository.save(candidate);
-    }
 
-    public ResponseEntity<Candidate> getCandidateProfile(Long id){
-        return candidateRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Candidate candidate = new Candidate();
+        candidate.setFullName(dto.fullName());
+        candidate.setEmail(dto.email());
+        candidate.setId(null);
+
+        Candidate saved = candidateRepository.save(candidate);
+        return new CandidateResponseDTO(saved);
     }
 
     public void processAndSaveCv(Long id, MultipartFile file) {
-        // 1. Basic File Validation
         if (file.isEmpty() || !file.getContentType().equals("application/pdf")) {
             throw new BadRequestException("Please upload a valid PDF file");
         }
 
-        Candidate candidate = candidateRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Candidate Not Found"));
+        Candidate candidate = getCandidateById(id);
 
-        // 2. ML Extraction
         try {
             String extractedText = mlClient.extractTextFromPDF(file);
             candidate.setResumeText(extractedText);
@@ -67,28 +73,22 @@ public class CandidateService {
         }
     }
 
-
-    public List<JobResponseDTO> returnMatchedJobs(Long id){
-        Candidate candidate = candidateRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Candidate Not Found"));
-
+    public List<JobResponseDTO> fetchMatchedJobs(Long id){
+        Candidate candidate = getCandidateById(id);
         String resumeText = candidate.getResumeText();
 
         if (resumeText == null || resumeText.isEmpty()) {
             throw new BadRequestException("Please upload your CV first before fetching matches.");
         }
 
-        List<Job> candidateJobs = jobService.returnAllJobs();
+        List<Job> allJobs = jobService.getAllJobs();
 
-        Map<Long, Double> scores = mlClient.rankJobs(resumeText, candidateJobs);
+        Map<Long, Double> scores = mlClient.rankJobs(resumeText, allJobs);
 
-        // 5. Sort and Map to DTOs
-        return candidateJobs.stream()
-                .map(job -> new JobResponseDTO(job, scores.get(job.getId())))
+        return allJobs.stream()
+                .map(job -> new JobResponseDTO(job, scores.getOrDefault(job.getId(), 0.0)))
                 .sorted(Comparator.comparing(JobResponseDTO::matchScore).reversed())
-                .limit(10) // Only show top 10
+                .limit(10)
                 .toList();
     }
-
-
 }
