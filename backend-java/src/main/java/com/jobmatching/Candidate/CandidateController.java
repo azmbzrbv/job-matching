@@ -1,5 +1,7 @@
 package com.jobmatching.Candidate;
 
+import com.jobmatching.Candidate.dto.CandidateRequestDTO;
+import com.jobmatching.Candidate.dto.CandidateResponseDTO;
 import com.jobmatching.Job.dto.JobResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,26 +22,24 @@ public class CandidateController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Candidate> register(@Valid @RequestBody Candidate candidate) {
-        Candidate savedCandidate = candidateService.registerCandidate(candidate);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedCandidate);
+    public ResponseEntity<CandidateResponseDTO> register(@Valid @RequestBody CandidateRequestDTO dto) {
+        CandidateResponseDTO saved = candidateService.registerCandidate(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Candidate> getProfile(@PathVariable Long id) {
-        return candidateService.getCandidateProfile(id);
+    public ResponseEntity<CandidateResponseDTO> getProfile(@PathVariable Long id) {
+        return ResponseEntity.ok(candidateService.fetchCandidateProfile(id));
     }
 
-    //cv logic
-    @PostMapping("{id}/cv-upload")
+    @PostMapping("/{id}/cv-upload")
     public ResponseEntity<String> uploadCv(@PathVariable Long id, @RequestParam("file") MultipartFile file){
         candidateService.processAndSaveCv(id, file);
-        return ResponseEntity.ok("CV uploaded succesfully");
+        return ResponseEntity.ok("CV uploaded successfully");
     }
 
-    @GetMapping("{id}/matches")
-    public List<JobResponseDTO> getMatchedJobs(@PathVariable Long id){
-        return candidateService.returnMatchedJobs(id);
+    @GetMapping("/{id}/matches")
+    public ResponseEntity<List<JobResponseDTO>> getMatchedJobs(@PathVariable Long id){
+        return ResponseEntity.ok(candidateService.fetchMatchedJobs(id));
     }
-
 }

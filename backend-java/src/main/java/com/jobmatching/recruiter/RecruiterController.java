@@ -1,6 +1,8 @@
 package com.jobmatching.recruiter;
 
 
+import com.jobmatching.recruiter.dto.RecruiterRequestDTO;
+import com.jobmatching.recruiter.dto.RecruiterResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +19,13 @@ public class RecruiterController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Recruiter> register(@Valid @RequestBody Recruiter recruiter) {
-        Recruiter savedRecruiter = recruiterService.registerRecruiter(recruiter);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedRecruiter);
+    public ResponseEntity<RecruiterResponseDTO> register(@Valid @RequestBody RecruiterRequestDTO dto) {
+        RecruiterResponseDTO saved = recruiterService.registerRecruiter(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Recruiter> getProfile(@PathVariable Long id) {
-        return ResponseEntity.ok(recruiterService.getRecruiterById(id));
+    public ResponseEntity<RecruiterResponseDTO> getProfile(@PathVariable Long id) {
+        return ResponseEntity.ok(recruiterService.fetchRecruiterProfile(id));
     }
 }

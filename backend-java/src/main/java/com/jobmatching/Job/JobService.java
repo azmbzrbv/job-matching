@@ -24,8 +24,19 @@ public class JobService {
     //get prefix for the entities(other services will use it)
     //fetch prefix for the dto files(controller will use it)
 
+    // --- INTERNAL GETTERS (For other services/internal logic) ---
+    public List<Job> getAllJobs(){
+        return jobRepository.findAll();
+    }
 
-    //methods for controller
+    public Job getJobById(Long id){
+        return jobRepository.findById(id).
+                orElseThrow(()->new ResourceNotFoundException("Job not found with id: " + id));
+    }
+
+
+
+    // --- EXTERNAL FETCHERS (For Controller) ---
     public List<JobResponseDTO> fetchAllJobs() {
         List<Job> jobs = jobRepository.findAll();
         List<JobResponseDTO> jobResponseDTOS= new ArrayList<>();
@@ -73,13 +84,4 @@ public class JobService {
                 .toList();
     }
 
-    //methods for other service classes
-    public List<Job> getAllJobs(){
-        return jobRepository.findAll();
-    }
-
-    public Job getJobById(Long id){
-        return jobRepository.findById(id).
-                orElseThrow(()->new ResourceNotFoundException("Job not found with id: " + id));
-    }
 }

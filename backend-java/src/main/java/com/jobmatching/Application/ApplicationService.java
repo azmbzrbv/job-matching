@@ -11,6 +11,7 @@ import com.jobmatching.Job.dto.JobResponseDTO;
 import com.jobmatching.exception.BadRequestException;
 import com.jobmatching.exception.ResourceNotFoundException;
 import com.jobmatching.mlservice.MLClient;
+import com.jobmatching.recruiter.Recruiter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,9 +37,15 @@ public class ApplicationService {
     }
 
     //get prefix for the entities(other services will use it)
-    //fetch prefix for the dto files(controller will use it)
+    //fetch prefix for the dto(controller will use it)
 
-    //methods for controller
+    // --- INTERNAL GETTER (For other services like JobService) ---
+    public Application getApplicationById(Long id) {
+        return applicationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Application not found with id: " + id));
+    }
+
+    // --- EXTERNAL FETCHERS (For Controller) ---
     public List<ApplicationResponseDTO> fetchAllApplications() {
         return applicationRepository.findAll().stream()
                 .map(application -> new ApplicationResponseDTO(application))
@@ -59,7 +66,7 @@ public class ApplicationService {
             throw new BadRequestException("You have already applied for this position.");
         }
 
-        Candidate candidate = candidateService.findCandidateById(candidateId);
+        Candidate candidate = candidateService.getCandidateById(candidateId);
         Job job = jobService.getJobById(jobId);
 
         // Score Calculation
@@ -74,8 +81,6 @@ public class ApplicationService {
         app.setStatus(ApplicationStatus.PENDING);
 
         Application saved = applicationRepository.save(app);
-
-        // 🛡️ Return the DTO here!
         return new ApplicationResponseDTO(saved);
     }
 
