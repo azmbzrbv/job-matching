@@ -1,4 +1,4 @@
-package com.jobmatching.Recruiter;
+package com.jobmatching.recruiter;
 
 import com.jobmatching.exception.BadRequestException;
 import com.jobmatching.exception.ResourceNotFoundException;

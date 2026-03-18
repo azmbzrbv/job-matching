@@ -1,7 +1,7 @@
 package com.jobmatching.Job;
 
 
-import com.jobmatching.Job.dto.JobRequestDto;
+import com.jobmatching.Job.dto.JobRequestDTO;
 import com.jobmatching.Job.dto.JobResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,7 @@ public class JobController {
 
     // For Recruiters: Post a new job
     @PostMapping
-    public ResponseEntity<JobResponseDTO> postJob(@Valid @RequestBody JobRequestDto jobRequestDto) {
+    public ResponseEntity<JobResponseDTO> postJob(@Valid @RequestBody JobRequestDTO jobRequestDto) {
         return ResponseEntity.ok(jobService.createJob(jobRequestDto));
     }
 

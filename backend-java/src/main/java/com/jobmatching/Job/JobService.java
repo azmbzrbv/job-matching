@@ -1,9 +1,9 @@
 package com.jobmatching.Job;
 
-import com.jobmatching.Job.dto.JobRequestDto;
+import com.jobmatching.Job.dto.JobRequestDTO;
 import com.jobmatching.Job.dto.JobResponseDTO;
-import com.jobmatching.Recruiter.Recruiter;
-import com.jobmatching.Recruiter.RecruiterService;
+import com.jobmatching.recruiter.Recruiter;
+import com.jobmatching.recruiter.RecruiterService;
 import com.jobmatching.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +43,7 @@ public class JobService {
     }
 
 
-    public JobResponseDTO createJob(JobRequestDto jobRequestDto) {
+    public JobResponseDTO createJob(JobRequestDTO jobRequestDto) {
         Job newJob = new Job();
         newJob.setTitle(jobRequestDto.title());
         newJob.setDescription(jobRequestDto.description());
