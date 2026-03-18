@@ -1,6 +1,8 @@
 package com.jobmatching.Job;
 
 
+import com.jobmatching.Job.dto.JobRequestDto;
+import com.jobmatching.Job.dto.JobResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,34 +21,34 @@ public class JobController {
 
     // For Candidates: Browse all available jobs
     @GetMapping
-    public ResponseEntity<List<Job>> getAllJobs() {
-        return ResponseEntity.ok(jobService.returnAllJobs());
+    public ResponseEntity<List<JobResponseDTO>> getAllJobs() {
+        return ResponseEntity.ok(jobService.fetchAllJobs());
     }
 
     // For Recruiters: Post a new job
     @PostMapping
-    public ResponseEntity<Job> postJob(@Valid @RequestBody Job job) {
-        return ResponseEntity.ok(jobService.createJob(job));
+    public ResponseEntity<JobResponseDTO> postJob(@Valid @RequestBody JobRequestDto jobRequestDto) {
+        return ResponseEntity.ok(jobService.createJob(jobRequestDto));
     }
 
     //For Recruiters: get jobs that was posted by recruiter
     @GetMapping("/recruiter/{recruiterId}")
-    public ResponseEntity<List<Job>> getMyJobs(@PathVariable Long recruiterId) {
-        List<Job> jobs = jobService.getJobsByRecruiter(recruiterId);
+    public ResponseEntity<List<JobResponseDTO>> getMyJobs(@PathVariable Long recruiterId) {
+        List<JobResponseDTO> jobs = jobService.fetchJobsByRecruiter(recruiterId);
         return ResponseEntity.ok(jobs);
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Job> getJobDetails(@PathVariable Long id) {
-        return ResponseEntity.ok(jobService.findJobById(id));
+    public ResponseEntity<JobResponseDTO> getJobDetails(@PathVariable Long id) {
+        return ResponseEntity.ok(jobService.fetchJobById(id));
     }
 
 
     // Example: GET /api/jobs/search?title=java
     @GetMapping("/search")
-    public ResponseEntity<List<Job>> searchJobs(@RequestParam String title) {
-        List<Job> results = jobService.searchJobsByTitle(title);
+    public ResponseEntity<List<JobResponseDTO>> searchJobs(@RequestParam String title) {
+        List<JobResponseDTO> results = jobService.fetchJobsByTitle(title);
         return ResponseEntity.ok(results);
     }
 

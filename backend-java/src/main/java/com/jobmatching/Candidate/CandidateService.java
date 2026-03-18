@@ -78,7 +78,7 @@ public class CandidateService {
             throw new BadRequestException("Please upload your CV first before fetching matches.");
         }
 
-        List<Job> candidateJobs = jobService.returnAllJobs();
+        List<Job> candidateJobs = jobService.getAllJobs();
 
         Map<Long, Double> scores = mlClient.rankJobs(resumeText, candidateJobs);
 
