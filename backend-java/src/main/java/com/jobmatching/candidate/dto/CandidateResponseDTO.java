@@ -1,6 +1,6 @@
-package com.jobmatching.Candidate.dto;
+package com.jobmatching.candidate.dto;
 
-import com.jobmatching.Candidate.Candidate;
+import com.jobmatching.candidate.Candidate;
 
 public record CandidateResponseDTO(
         Long id,

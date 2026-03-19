@@ -1,8 +1,8 @@
-package com.jobmatching.Candidate;
+package com.jobmatching.candidate;
 
-import com.jobmatching.Candidate.dto.CandidateRequestDTO;
-import com.jobmatching.Candidate.dto.CandidateResponseDTO;
-import com.jobmatching.Job.dto.JobResponseDTO;
+import com.jobmatching.candidate.dto.CandidateRequestDTO;
+import com.jobmatching.candidate.dto.CandidateResponseDTO;
+import com.jobmatching.job.dto.JobResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

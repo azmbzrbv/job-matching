@@ -1,8 +1,8 @@
-package com.jobmatching.Candidate;
+package com.jobmatching.candidate;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.jobmatching.Application.Application;
+import com.jobmatching.application.Application;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -26,6 +26,8 @@ public class Candidate {
 
     @Column(columnDefinition = "TEXT")
     private String resumeText;
+
+    private String cvFilePath;
 
     @JsonIgnore
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
@@ -69,5 +71,13 @@ public class Candidate {
 
     public void setApplications(List<Application> applications) {
         this.applications = applications;
+    }
+
+    public String getCvFilePath() {
+        return cvFilePath;
+    }
+
+    public void setCvFilePath(String cvFilePath) {
+        this.cvFilePath = cvFilePath;
     }
 }

@@ -2,7 +2,7 @@ package com.jobmatching.recruiter;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.jobmatching.Job.Job;
+import com.jobmatching.job.Job;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

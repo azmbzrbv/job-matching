@@ -1,6 +1,6 @@
-package com.jobmatching.Job.dto;
+package com.jobmatching.job.dto;
 
-import com.jobmatching.Job.Job;
+import com.jobmatching.job.Job;
 
 public record JobResponseDTO(
          Long id,

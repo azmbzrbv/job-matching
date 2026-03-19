@@ -1,4 +1,4 @@
-package com.jobmatching.Application.dto;
+package com.jobmatching.application.dto;
 
 import jakarta.validation.constraints.NotNull;
 

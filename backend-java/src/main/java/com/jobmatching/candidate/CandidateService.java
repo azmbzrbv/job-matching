@@ -1,15 +1,17 @@
-package com.jobmatching.Candidate;
+package com.jobmatching.candidate;
 
 
-import com.jobmatching.Candidate.dto.CandidateRequestDTO;
-import com.jobmatching.Candidate.dto.CandidateResponseDTO;
-import com.jobmatching.Job.Job;
-import com.jobmatching.Job.JobService;
-import com.jobmatching.Job.dto.JobResponseDTO;
+import com.jobmatching.candidate.dto.CandidateRequestDTO;
+import com.jobmatching.candidate.dto.CandidateResponseDTO;
+import com.jobmatching.job.Job;
+import com.jobmatching.job.JobService;
+import com.jobmatching.job.dto.JobResponseDTO;
 import com.jobmatching.exception.BadRequestException;
 import com.jobmatching.exception.ResourceNotFoundException;
 import com.jobmatching.mlservice.MLClient;
+import com.jobmatching.storage.StorageService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Comparator;
@@ -22,11 +24,13 @@ public class CandidateService {
     private final JobService jobService;
     private final CandidateRepository candidateRepository;
     private final MLClient mlClient;
+    private final StorageService storageService;
 
-    public CandidateService(CandidateRepository candidateRepository, MLClient mlClient, JobService jobService){
+    public CandidateService(CandidateRepository candidateRepository, MLClient mlClient, JobService jobService, StorageService storageService){
         this.candidateRepository = candidateRepository;
         this.mlClient = mlClient;
         this.jobService = jobService;
+        this.storageService = storageService;
     }
 
     // --- INTERNAL GETTERS (For other services/internal logic) ---
@@ -57,20 +61,20 @@ public class CandidateService {
         return new CandidateResponseDTO(saved);
     }
 
+    @Transactional // Ensures DB integrity
     public void processAndSaveCv(Long id, MultipartFile file) {
-        if (file.isEmpty() || !file.getContentType().equals("application/pdf")) {
-            throw new BadRequestException("Please upload a valid PDF file");
-        }
-
         Candidate candidate = getCandidateById(id);
-
+        String extractedText;
         try {
-            String extractedText = mlClient.extractTextFromPDF(file);
-            candidate.setResumeText(extractedText);
-            candidateRepository.save(candidate);
+            extractedText = mlClient.extractTextFromPDF(file);
         } catch (Exception e) {
             throw new RuntimeException("ML Service Error: Could not parse CV", e);
         }
+
+        String fileName = storageService.store(file);
+        candidate.setCvFilePath(fileName);
+        candidate.setResumeText(extractedText);
+        candidateRepository.save(candidate);
     }
 
     public List<JobResponseDTO> fetchMatchedJobs(Long id){

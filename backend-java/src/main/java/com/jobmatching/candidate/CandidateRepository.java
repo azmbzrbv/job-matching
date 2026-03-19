@@ -1,4 +1,4 @@
-package com.jobmatching.Candidate;
+package com.jobmatching.candidate;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;

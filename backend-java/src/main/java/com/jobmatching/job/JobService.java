@@ -1,7 +1,7 @@
-package com.jobmatching.Job;
+package com.jobmatching.job;
 
-import com.jobmatching.Job.dto.JobRequestDTO;
-import com.jobmatching.Job.dto.JobResponseDTO;
+import com.jobmatching.job.dto.JobRequestDTO;
+import com.jobmatching.job.dto.JobResponseDTO;
 import com.jobmatching.recruiter.Recruiter;
 import com.jobmatching.recruiter.RecruiterService;
 import com.jobmatching.exception.ResourceNotFoundException;

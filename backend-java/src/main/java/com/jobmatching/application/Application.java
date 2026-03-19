@@ -1,8 +1,8 @@
-package com.jobmatching.Application;
+package com.jobmatching.application;
 
 
-import com.jobmatching.Candidate.Candidate;
-import com.jobmatching.Job.Job;
+import com.jobmatching.candidate.Candidate;
+import com.jobmatching.job.Job;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 

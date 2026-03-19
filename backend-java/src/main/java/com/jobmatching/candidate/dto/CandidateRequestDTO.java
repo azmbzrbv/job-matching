@@ -1,4 +1,4 @@
-package com.jobmatching.Candidate.dto;
+package com.jobmatching.candidate.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

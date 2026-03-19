@@ -1,7 +1,7 @@
-package com.jobmatching.Application.dto;
+package com.jobmatching.application.dto;
 
-import com.jobmatching.Application.Application;
-import com.jobmatching.Application.ApplicationStatus;
+import com.jobmatching.application.Application;
+import com.jobmatching.application.ApplicationStatus;
 
 import java.time.LocalDateTime;
 

@@ -1,8 +1,8 @@
 package com.jobmatching.mlservice;
 
 
-import com.jobmatching.Candidate.Candidate;
-import com.jobmatching.Job.Job;
+import com.jobmatching.candidate.Candidate;
+import com.jobmatching.job.Job;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
