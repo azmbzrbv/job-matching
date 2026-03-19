@@ -27,6 +27,8 @@ public class Candidate {
     @Column(columnDefinition = "TEXT")
     private String resumeText;
 
+    private String cvFilePath;
+
     @JsonIgnore
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
     private List<Application> applications = new ArrayList<>();
@@ -69,5 +71,13 @@ public class Candidate {
 
     public void setApplications(List<Application> applications) {
         this.applications = applications;
+    }
+
+    public String getCvFilePath() {
+        return cvFilePath;
+    }
+
+    public void setCvFilePath(String cvFilePath) {
+        this.cvFilePath = cvFilePath;
     }
 }
