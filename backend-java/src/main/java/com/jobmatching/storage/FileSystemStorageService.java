@@ -1,6 +1,7 @@
 package com.jobmatching.storage;
 
 import com.jobmatching.exception.ResourceNotFoundException;
+import com.jobmatching.exception.StorageException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
@@ -30,15 +31,21 @@ public class FileSystemStorageService implements StorageService{
     @Override
     public String store(MultipartFile file) {
         if (!isSupportedContentType(file.getContentType())) {
-            throw new RuntimeException("Unsupported file type");
+            throw new StorageException("Unsupported file type");
         }
 
         if (file.getSize() > 5_000_000) { // 5 MB size limit
-            throw new RuntimeException("File size exceeds limits");
+            throw new StorageException("File size exceeds limits");
         }
 
         try {
-            String cleanName = file.getOriginalFilename().replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+            if (!Files.exists(rootLocation)) {
+                Files.createDirectories(rootLocation);
+            }
+            String originalName = file.getOriginalFilename();
+            String cleanName = (originalName != null)
+                    ? originalName.replaceAll("[^a-zA-Z0-9\\.\\-]", "_")
+                    : "resume.pdf";
             String finalFileName = UUID.randomUUID().toString() + "_" + cleanName;
             Files.copy(
                     file.getInputStream(),
@@ -47,7 +54,7 @@ public class FileSystemStorageService implements StorageService{
             );
             return finalFileName;
         } catch (Exception e) {
-            throw  new RuntimeException("File upload failed");
+            throw  new StorageException("File upload failed", e);
         }
     }
 
@@ -58,7 +65,7 @@ public class FileSystemStorageService implements StorageService{
             Path filePath = this.rootLocation.resolve(filename).normalize();
 
             if (!filePath.toAbsolutePath().startsWith(this.rootLocation.toAbsolutePath())) {
-                throw new RuntimeException("Security: Access denied to path outside uploads.");
+                throw new StorageException("Security: Access denied to path outside uploads.");
             }
 
             Resource resource = new UrlResource(filePath.toUri());
@@ -67,7 +74,7 @@ public class FileSystemStorageService implements StorageService{
             }
             return resource;
         } catch (Exception e) {
-            throw new RuntimeException("Could not read file: " + filename, e);
+            throw new StorageException("Could not read file: " + filename, e);
         }
     }
 
@@ -79,7 +86,7 @@ public class FileSystemStorageService implements StorageService{
 
             //Ensure the file is inside our uploads directory
             if (!file.toAbsolutePath().startsWith(rootLocation.toAbsolutePath())) {
-                throw new RuntimeException("Security: Cannot delete files outside uploads directory");
+                throw new StorageException("Security: Cannot delete files outside uploads directory");
             }
             //Delete the file if it exists
             boolean deleted = Files.deleteIfExists(file);
@@ -87,7 +94,7 @@ public class FileSystemStorageService implements StorageService{
                 System.out.println("Warning: Attempted to delete " + filename + " but it did not exist.");
             }
         } catch (IOException e) {
-            throw new RuntimeException("Could not delete file: " + filename, e);
+            throw new StorageException("Could not delete file: " + filename, e);
         }
     }
 
