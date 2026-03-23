@@ -2,6 +2,9 @@
 target/
 bin/
 
+#Local file storage directory
+uploads/
+
 # Compiled class file
 *.class
 
