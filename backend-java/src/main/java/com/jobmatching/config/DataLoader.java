@@ -6,8 +6,11 @@ import com.jobmatching.job.Job;
 import com.jobmatching.recruiter.Recruiter;
 import com.jobmatching.job.JobRepository;
 import com.jobmatching.recruiter.RecruiterRepository;
+import com.jobmatching.user.Role;
+import com.jobmatching.user.User;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,11 +22,13 @@ public class DataLoader implements CommandLineRunner {
     private final JobRepository jobRepository;
     private final RecruiterRepository recruiterRepository;
     private final CandidateRepository candidateRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DataLoader(JobRepository jobRepository, RecruiterRepository recruiterRepository, CandidateRepository candidateRepository) {
+    public DataLoader(JobRepository jobRepository, RecruiterRepository recruiterRepository, CandidateRepository candidateRepository, PasswordEncoder passwordEncoder) {
         this.jobRepository = jobRepository;
         this.recruiterRepository = recruiterRepository;
         this.candidateRepository = candidateRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -38,29 +43,37 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private void seedDatabase() {
-        // Create a Recruiter
-        Recruiter techCorp = new Recruiter();
-        techCorp.setName("Alice Johnson");
-        techCorp.setCompanyName("TechCorp Solutions");
-        techCorp.setEmail("hr@techcorp.com");
-        recruiterRepository.save(techCorp);
+        //Create Recruiter User Account
+        User recruiterUser = new User();
+        recruiterUser.setEmail("hr@techcorp.com");
+        recruiterUser.setPassword(passwordEncoder.encode("password123")); // HASHED!
+        recruiterUser.setRole(Role.ROLE_RECRUITER);
 
+        //Create Recruiter Profile and Link to User
+        Recruiter techCorp = new Recruiter();
+        techCorp.setName("Alice Smith");
+        techCorp.setCompanyName("TechCorp Solutions");
+        techCorp.setUser(recruiterUser);
+        recruiterRepository.save(techCorp); // Cascade.ALL saves the user automatically
+
+        //Create Candidate User Account
+        User candidateUser = new User();
+        candidateUser.setEmail("bzrbvazm@gmail.com");
+        candidateUser.setPassword(passwordEncoder.encode("candidate123"));
+        candidateUser.setRole(Role.ROLE_CANDIDATE);
+
+        // Create Candidate Profile and Link
         Candidate candidate = new Candidate();
         candidate.setFullName("Azim Maksatbek uulu");
-        candidate.setEmail("bzrbvazm@gmail.com");
-        candidateRepository.save(candidate);
+        candidate.setUser(candidateUser);
+        candidateRepository.save(candidate); //saves user as well
 
-        // Create sample Jobs linked to that Recruiter
+        // create Jobs (Same as before)
         Job job1 = new Job();
         job1.setTitle("Full Stack Developer");
         job1.setDescription("Seeking a developer proficient in Spring Boot and React.");
         job1.setRecruiter(techCorp);
 
-        Job job2 = new Job();
-        job2.setTitle("Data Engineer");
-        job2.setDescription("Looking for expertise in Python, SQL, and Vector Databases.");
-        job2.setRecruiter(techCorp);
-
-        jobRepository.saveAll(List.of(job1, job2));
+        jobRepository.save(job1);
     }
 }

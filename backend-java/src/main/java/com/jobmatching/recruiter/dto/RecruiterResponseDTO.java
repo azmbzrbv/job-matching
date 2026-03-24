@@ -13,7 +13,7 @@ public record RecruiterResponseDTO(
         this(
              recruiter.getId(),
              recruiter.getName(),
-             recruiter.getEmail(),
+             recruiter.getUser() != null ? recruiter.getUser().getEmail() : null,
              recruiter.getCompanyName(),
              recruiter.getJobs().size()
         );

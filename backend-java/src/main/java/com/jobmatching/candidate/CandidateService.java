@@ -48,13 +48,12 @@ public class CandidateService {
     }
 
     public CandidateResponseDTO registerCandidate(CandidateRequestDTO dto) {
-        if (candidateRepository.existsByEmail(dto.email())) {
+        if (candidateRepository.existsByUserEmail(dto.email())) {
             throw new BadRequestException("Email already registered");
         }
 
         Candidate candidate = new Candidate();
         candidate.setFullName(dto.fullName());
-        candidate.setEmail(dto.email());
         candidate.setId(null);
 
         Candidate saved = candidateRepository.save(candidate);

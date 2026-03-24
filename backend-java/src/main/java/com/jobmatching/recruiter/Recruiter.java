@@ -20,10 +20,6 @@ public class Recruiter {
     @NotBlank(message = "Recruiter name is required")
     private String name;
 
-    @Email(message = "Please provide a valid email address")
-    @NotBlank(message = "Email is required")
-    private String email;
-
     @NotBlank(message = "Company name is required")
     private String companyName;
 
@@ -49,14 +45,6 @@ public class Recruiter {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getCompanyName() {
