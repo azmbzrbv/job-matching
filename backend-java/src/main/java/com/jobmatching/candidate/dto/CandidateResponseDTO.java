@@ -11,7 +11,7 @@ public record CandidateResponseDTO(
         this(
                 candidate.getId(),
                 candidate.getFullName(),
-                candidate.getEmail()
+                candidate.getUser()!=null ? candidate.getUser().getEmail() : null
         );
     }
 }

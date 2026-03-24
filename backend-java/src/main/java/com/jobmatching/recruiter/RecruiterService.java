@@ -28,13 +28,12 @@ public class RecruiterService {
     }
 
     public RecruiterResponseDTO registerRecruiter(RecruiterRequestDTO dto) {
-        if (recruiterRepository.existsByEmail(dto.email())) {
+        if (recruiterRepository.existsByUserEmail(dto.email())) {
             throw new BadRequestException("Email already in use by another recruiter");
         }
 
         Recruiter recruiter = new Recruiter();
         recruiter.setName(dto.name());
-        recruiter.setEmail(dto.email());
         recruiter.setCompanyName(dto.companyName());
         recruiter.setId(null);
 

@@ -3,8 +3,8 @@ package com.jobmatching.candidate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jobmatching.application.Application;
+import com.jobmatching.user.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.ArrayList;
@@ -20,16 +20,16 @@ public class Candidate {
     @NotBlank(message = "Full name is required")
     private String fullName;
 
-    @Email(message = "Invalid email format")
-    @NotBlank(message = "Email is required")
-    private String email;
-
     @Column(columnDefinition = "TEXT")
     private String resumeText;
 
     private String cvFilePath;
 
-    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
+
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
     private List<Application> applications = new ArrayList<>();
 
@@ -47,14 +47,6 @@ public class Candidate {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getResumeText() {
@@ -79,5 +71,13 @@ public class Candidate {
 
     public void setCvFilePath(String cvFilePath) {
         this.cvFilePath = cvFilePath;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
