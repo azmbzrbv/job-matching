@@ -39,7 +39,7 @@ public class ApplicationController {
     }
 
     // Candidate View: My Applications
-    @GetMapping("/my-applications/{candidateId}")
+    @GetMapping("/my-apps/{candidateId}")
     public ResponseEntity<List<ApplicationResponseDTO>> getMyApplications(@PathVariable Long candidateId) {
         return ResponseEntity.ok(applicationService.fetchApplicationsByCandidate(candidateId));
     }
