@@ -3,6 +3,7 @@ package com.jobmatching.candidate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jobmatching.application.Application;
+import com.jobmatching.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -29,7 +30,11 @@ public class Candidate {
 
     private String cvFilePath;
 
-    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
+
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
     private List<Application> applications = new ArrayList<>();
 
@@ -79,5 +84,13 @@ public class Candidate {
 
     public void setCvFilePath(String cvFilePath) {
         this.cvFilePath = cvFilePath;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

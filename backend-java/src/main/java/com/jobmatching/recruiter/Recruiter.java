@@ -3,6 +3,7 @@ package com.jobmatching.recruiter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jobmatching.job.Job;
+import com.jobmatching.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -26,7 +27,11 @@ public class Recruiter {
     @NotBlank(message = "Company name is required")
     private String companyName;
 
-    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
+
     @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL)
     private List<Job> jobs = new ArrayList<>();
 
@@ -68,5 +73,13 @@ public class Recruiter {
 
     public void setJobs(List<Job> jobs) {
         this.jobs = jobs;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
